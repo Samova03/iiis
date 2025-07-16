@@ -16,11 +16,30 @@ const EventCalendar = () => {
 
   useEffect(() => {
     if (value instanceof Date) {
-      router.push(`?date=${value}`);
+      router.push(`?date=${value.toISOString().split("T")[0]}`); // إرسال التاريخ بصيغة YYYY-MM-DD
     }
   }, [value, router]);
 
-  return <Calendar onChange={onChange} value={value} />;
+  return (
+    <div dir="rtl" className="calendar-ar">
+      <Calendar
+        onChange={onChange}
+        value={value}
+        locale="ar" // تعريب أسماء الأيام والشهور
+        
+      />
+      <style jsx global>{`
+        /* تعديل اتجاه التقويم للنصوص والخلية */
+        .react-calendar {
+          direction: rtl;
+          text-align: right;
+        }
+        .react-calendar__month-view__days__day abbr {
+          cursor: pointer;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default EventCalendar;

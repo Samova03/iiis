@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="ar" dir="rtl">
         <body className={inter.className}>
           {children} <ToastContainer position="bottom-right" theme="dark" />
         </body>

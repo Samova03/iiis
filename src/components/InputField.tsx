@@ -1,7 +1,7 @@
 import { FieldError } from "react-hook-form";
 
 type InputFieldProps = {
-  label: string;
+  label: string; // هنا تكتب التسمية بالعربي عند الاستخدام
   type?: string;
   register: any;
   name: string;
@@ -22,7 +22,7 @@ const InputField = ({
   inputProps,
 }: InputFieldProps) => {
   return (
-    <div className={hidden ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
+    <div className={hidden ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"} dir="rtl">
       <label className="text-xs text-gray-500">{label}</label>
       <input
         type={type}

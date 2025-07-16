@@ -24,19 +24,24 @@ export type FormContainerProps = {
 const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
   let relatedData = {};
 
+  // الحصول على بيانات المستخدم الحالي ودوره
   const { userId, sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
 
+  // إذا لم يكن نوع العملية حذف، يتم جلب البيانات المتعلقة حسب الجدول
   if (type !== "delete") {
     switch (table) {
       case "subject":
+        // جلب قائمة المعلمين للمواد
         const subjectTeachers = await prisma.teacher.findMany({
           select: { id: true, name: true, surname: true },
         });
         relatedData = { teachers: subjectTeachers };
         break;
+
       case "class":
+        // جلب الدرجات وقائمة المعلمين للفصول
         const classGrades = await prisma.grade.findMany({
           select: { id: true, level: true },
         });
@@ -45,13 +50,17 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         });
         relatedData = { teachers: classTeachers, grades: classGrades };
         break;
+
       case "teacher":
+        // جلب المواد التي يدرسها المعلم
         const teacherSubjects = await prisma.subject.findMany({
           select: { id: true, name: true },
         });
         relatedData = { subjects: teacherSubjects };
         break;
+
       case "student":
+        // جلب الدرجات والفصول مع عدد الطلاب لكل فصل
         const studentGrades = await prisma.grade.findMany({
           select: { id: true, level: true },
         });
@@ -60,7 +69,9 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         });
         relatedData = { classes: studentClasses, grades: studentGrades };
         break;
+
       case "exam":
+        // جلب الدروس للامتحانات، مع فلترة حسب المعلم إذا كان المستخدم معلم
         const examLessons = await prisma.lesson.findMany({
           where: {
             ...(role === "teacher" ? { teacherId: currentUserId! } : {}),
@@ -76,7 +87,7 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
   }
 
   return (
-    <div className="">
+    <div>
       <FormModal
         table={table}
         type={type}

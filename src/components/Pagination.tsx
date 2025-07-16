@@ -15,7 +15,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
     router.push(`${window.location.pathname}?${params}`);
   };
   return (
-    <div className="p-4 flex items-center justify-between text-gray-500">
+    <div className="p-4 flex items-center justify-between text-gray-500" dir="rtl">
       <button
         disabled={!hasPrev}
         className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
@@ -23,7 +23,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
           changePage(page - 1);
         }}
       >
-        Prev
+        السابق
       </button>
       <div className="flex items-center gap-2 text-sm">
         {Array.from(
@@ -53,7 +53,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
           changePage(page + 1);
         }}
       >
-        Next
+        التالي
       </button>
     </div>
   );

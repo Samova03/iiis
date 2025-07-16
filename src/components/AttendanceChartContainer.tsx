@@ -25,7 +25,7 @@ const AttendanceChartContainer = async () => {
 
   // console.log(data)
 
-  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const daysOfWeek = ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
 
   const attendanceMap: { [key: string]: { present: number; absent: number } } =
     {
@@ -51,16 +51,17 @@ const AttendanceChartContainer = async () => {
     }
   });
 
-  const data = daysOfWeek.map((day) => ({
-    name: day,
-    present: attendanceMap[day].present,
-    absent: attendanceMap[day].absent,
-  }));
+const data = daysOfWeek.map((day) => ({
+  name: day,
+  present: attendanceMap[day]?.present ?? 0,
+  absent: attendanceMap[day]?.absent ?? 0,
+}));
+
 
   return (
     <div className="bg-white rounded-lg p-4 h-full">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold">Attendance</h1>
+        <h1 className="text-lg font-semibold">الحضور والغياب</h1>
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       <AttendanceChart data={data}/>

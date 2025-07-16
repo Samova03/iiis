@@ -21,7 +21,7 @@ const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
   exam: deleteExam,
-// TODO: OTHER DELETE ACTIONS
+  // TODO: باقي إجراءات الحذف
   parent: deleteSubject,
   lesson: deleteSubject,
   assignment: deleteSubject,
@@ -31,27 +31,23 @@ const deleteActionMap = {
   announcement: deleteSubject,
 };
 
-// USE LAZY LOADING
-
-// import TeacherForm from "./forms/TeacherForm";
-// import StudentForm from "./forms/StudentForm";
-
+// التحميل الديناميكي للنماذج مع رسالة تحميل بالعربية
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <h1>جاري التحميل...</h1>,
 });
 const StudentForm = dynamic(() => import("./forms/StudentForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <h1>جاري التحميل...</h1>,
 });
 const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <h1>جاري التحميل...</h1>,
 });
 const ClassForm = dynamic(() => import("./forms/ClassForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <h1>جاري التحميل...</h1>,
 });
 const ExamForm = dynamic(() => import("./forms/ExamForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <h1>جاري التحميل...</h1>,
 });
-// TODO: OTHER FORMS
+// TODO: باقي النماذج
 
 const forms: {
   [key: string]: (
@@ -100,7 +96,7 @@ const forms: {
       setOpen={setOpen}
       relatedData={relatedData}
     />
-    // TODO OTHER LIST ITEMS
+    // TODO: باقي النماذج
   ),
 };
 
@@ -131,7 +127,7 @@ const FormModal = ({
 
     useEffect(() => {
       if (state.success) {
-        toast(`${table} has been deleted!`);
+        toast(`تم حذف ${table} بنجاح!`);
         setOpen(false);
         router.refresh();
       }
@@ -141,16 +137,16 @@ const FormModal = ({
       <form action={formAction} className="p-4 flex flex-col gap-4">
         <input type="text | number" name="id" value={id} hidden />
         <span className="text-center font-medium">
-          All data will be lost. Are you sure you want to delete this {table}?
+          سيتم حذف جميع البيانات المتعلقة. هل أنت متأكد أنك تريد حذف هذا الـ {table}؟
         </span>
         <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
-          Delete
+          حذف
         </button>
       </form>
     ) : type === "create" || type === "update" ? (
       forms[table](setOpen, type, data, relatedData)
     ) : (
-      "Form not found!"
+      "النموذج غير موجود!"
     );
   };
 
@@ -159,18 +155,26 @@ const FormModal = ({
       <button
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
+        aria-label={
+          type === "create"
+            ? `إضافة ${table}`
+            : type === "update"
+            ? `تعديل ${table}`
+            : `حذف ${table}`
+        }
       >
         <Image src={`/${type}.png`} alt="" width={16} height={16} />
       </button>
       {open && (
-        <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+        <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center" dir="rtl">
           <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <div
               className="absolute top-4 right-4 cursor-pointer"
               onClick={() => setOpen(false)}
+              aria-label="إغلاق"
             >
-              <Image src="/close.png" alt="" width={14} height={14} />
+              <Image src="/close.png" alt="إغلاق" width={14} height={14} />
             </div>
           </div>
         </div>

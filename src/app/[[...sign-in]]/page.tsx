@@ -9,16 +9,17 @@ import { useEffect } from "react";
 
 const LoginPage = () => {
   const { isLoaded, isSignedIn, user } = useUser();
-
   const router = useRouter();
 
   useEffect(() => {
-    const role = user?.publicMetadata.role;
-
-    if (role) {
-      router.push(`/${role}`);
+    if (isLoaded && isSignedIn) {
+      const role = user?.publicMetadata?.role;
+      if (role) {
+        // نستخدم replace بدل push عشان ما يترك سجل في history للصفحة هذي
+        router.replace(`/${role}`);
+      }
     }
-  }, [user, router]);
+  }, [isLoaded, isSignedIn, user, router]);
 
   return (
     <div className="h-screen flex items-center justify-center bg-lamaSkyLight">
@@ -34,9 +35,7 @@ const LoginPage = () => {
           <h2 className="text-gray-400">Sign in to your account</h2>
           <Clerk.GlobalError className="text-sm text-red-400" />
           <Clerk.Field name="identifier" className="flex flex-col gap-2">
-            <Clerk.Label className="text-xs text-gray-500">
-              Username
-            </Clerk.Label>
+            <Clerk.Label className="text-xs text-gray-500">Username</Clerk.Label>
             <Clerk.Input
               type="text"
               required
@@ -45,9 +44,7 @@ const LoginPage = () => {
             <Clerk.FieldError className="text-xs text-red-400" />
           </Clerk.Field>
           <Clerk.Field name="password" className="flex flex-col gap-2">
-            <Clerk.Label className="text-xs text-gray-500">
-              Password
-            </Clerk.Label>
+            <Clerk.Label className="text-xs text-gray-500">Password</Clerk.Label>
             <Clerk.Input
               type="password"
               required

@@ -14,15 +14,31 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
+        // lamaSky: "#C3EBFA",
+        // lamaSkyLight: "#EDF9FD",
+        // lamaPurple: "#CFCEFF",
+        // lamaPurpleLight: "#F1F0FF",
+        // lamaYellow: "#FAE27C",
+        // lamaYellowLight: "#FEFCE8",
         lamaSky: "#C3EBFA",
         lamaSkyLight: "#EDF9FD",
-        lamaPurple: "#CFCEFF",
+        lamaPurple: "#d4a373",
         lamaPurpleLight: "#F1F0FF",
-        lamaYellow: "#FAE27C",
-        lamaYellowLight: "#FEFCE8",
+        lamaYellow: "#d4a373",
+        lamaYellowLight: "#d4a373",
+      },
+      keyframes: {
+        slide: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+      },
+      animation: {
+        slide: "slide 20s linear infinite",
       },
     },
   },
   plugins: [],
 };
+
 export default config;
