@@ -28,19 +28,14 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-  colors: {
-  // ذهبي دافئ للعناصر المهمة
-  lamaSky: "#D2B48C",
-  lamaSkyLight: "#F0E6D6",
-  
-  // بيج كريمي للخلفيات
-  lamaPurple: "#F7F3EE",
-  lamaPurpleLight: "#FCFAF8",
-  
-  // بني ذهبي للنصوص
-  lamaYellow: "#B8956A",
-  lamaYellowLight: "#E2D5C7",
-},
+      colors: {
+        lamaSky: "#C3EBFA",
+        lamaSkyLight: "#EDF9FD",
+        lamaPurple: "#d4a373",
+        lamaPurpleLight: "#F1F0FF",
+        lamaYellow: "#d4a373",
+        lamaYellowLight: "#d4a373",
+      },
       keyframes: {
         slide: {
           "0%": { transform: "translateX(100%)" },

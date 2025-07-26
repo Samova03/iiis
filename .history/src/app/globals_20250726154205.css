@@ -17,8 +17,7 @@
 
 body {
   font-family: 'Tajawal', 'Inter', sans-serif;
-  direction: rtl;
-  /* للنصوص العربية */
+  direction: rtl; /* للنصوص العربية */
 }
 
 /* فئات مخصصة للخطوط */
@@ -118,7 +117,7 @@ body {
   background-color: #e2f8ff !important;
 }
 
-.rbc-event:nth-child(2) {
+.rbc-event:nth-child(2) {  
   background-color: #fefce8 !important;
 }
 
