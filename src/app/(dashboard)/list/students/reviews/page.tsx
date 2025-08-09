@@ -1,1006 +1,990 @@
-// "use client"
-// import { useState, useMemo } from "react"
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Input } from "@/components/ui/input"
-// import { Button } from "@/components/ui/button"
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-// import { Badge } from "@/components/ui/badge"
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-// import { Textarea } from "@/components/ui/textarea"
-// import { Label } from "@/components/ui/label"
-// import { Progress } from "@/components/ui/progress"
-// import { Separator } from "@/components/ui/separator"
-// import {
-//   Filter,
-//   Eye,
-//   Edit,
-//   Save,
-//   FileText,
-//   Users,
-//   BookOpen,
-//   TrendingUp,
-//   Search,
-//   Calendar,
-//   GraduationCap,
-//   ClipboardList,
-//   BarChart3,
-//   Download,
-//   RefreshCw,
-//   CheckCircle,
-//   Clock,
-//   AlertCircle,
-//   XCircle,
-//   Loader2,
-// } from "lucide-react"
+"use client"
 
-// // نوع البيانات للطلب
-// interface ReviewRequest {
-//   id: string
-//   studentName: string
-//   nationalId: string
-//   section: string
-//   academicYear: string
-//   subject: string
-//   currentGrade: number
-//   newGrade: number | null
-//   submissionDate: string
-//   status: "جديد" | "قيد المراجعة" | "تم التعديل" | "تمت المراجعة - لا يوجد تعديل" | "معلق"
-//   reviewerNotes: string
-//   reviewer: string
-//   lastUpdate: string
-// }
+import { useState, useMemo } from "react"
 
-// // بيانات تجريبية موسعة
-// const mockData: ReviewRequest[] = [
-//   {
-//     id: "REV2024-001",
-//     studentName: "فاطمة أحمد محمد",
-//     nationalId: "199912345678",
-//     section: "أ",
-//     academicYear: "الثالثة",
-//     subject: "الرياضيات",
-//     currentGrade: 78,
-//     newGrade: null,
-//     submissionDate: "2024-07-15",
-//     status: "قيد المراجعة",
-//     reviewerNotes: "",
-//     reviewer: "أ. محمد علي",
-//     lastUpdate: "2024-07-16",
-//   },
-//   {
-//     id: "REV2024-002",
-//     studentName: "عائشة سالم أحمد",
-//     nationalId: "199823456789",
-//     section: "ب",
-//     academicYear: "الثانية",
-//     subject: "الفيزياء",
-//     currentGrade: 65,
-//     newGrade: 72,
-//     submissionDate: "2024-07-14",
-//     status: "تم التعديل",
-//     reviewerNotes: "تم مراجعة الإجابة وتصحيح الدرجة",
-//     reviewer: "د. سارة محمد",
-//     lastUpdate: "2024-07-17",
-//   },
-//   {
-//     id: "REV2024-003",
-//     studentName: "مريم خالد عبدالله",
-//     nationalId: "199934567890",
-//     section: "أ",
-//     academicYear: "الأولى",
-//     subject: "الكيمياء",
-//     currentGrade: 85,
-//     newGrade: null,
-//     submissionDate: "2024-07-13",
-//     status: "تمت المراجعة - لا يوجد تعديل",
-//     reviewerNotes: "الدرجة صحيحة",
-//     reviewer: "أ. أحمد حسن",
-//     lastUpdate: "2024-07-18",
-//   },
-//   {
-//     id: "REV2024-004",
-//     studentName: "نور عبدالرحمن علي",
-//     nationalId: "199945678901",
-//     section: "ج",
-//     academicYear: "الرابعة",
-//     subject: "الأحياء",
-//     currentGrade: 92,
-//     newGrade: null,
-//     submissionDate: "2024-07-12",
-//     status: "جديد",
-//     reviewerNotes: "",
-//     reviewer: "",
-//     lastUpdate: "2024-07-12",
-//   },
-//   {
-//     id: "REV2024-005",
-//     studentName: "هدى محمود يوسف",
-//     nationalId: "199956789012",
-//     section: "ب",
-//     academicYear: "الثالثة",
-//     subject: "التاريخ",
-//     currentGrade: 58,
-//     newGrade: null,
-//     submissionDate: "2024-07-11",
-//     status: "معلق",
-//     reviewerNotes: "يحتاج مراجعة إضافية",
-//     reviewer: "د. ليلى أحمد",
-//     lastUpdate: "2024-07-19",
-//   },
-//   {
-//     id: "REV2024-006",
-//     studentName: "زينب محمد أحمد",
-//     nationalId: "199967890123",
-//     section: "أ",
-//     academicYear: "الثانية",
-//     subject: "الجغرافيا",
-//     currentGrade: 73,
-//     newGrade: 78,
-//     submissionDate: "2024-07-10",
-//     status: "تم التعديل",
-//     reviewerNotes: "تم تصحيح خطأ في التصحيح",
-//     reviewer: "أ. فاطمة علي",
-//     lastUpdate: "2024-07-20",
-//   },
-// ]
+// تحديث بيانات الطلاب لتشمل الطالبة الجديدة وإزالة الحالات غير المرغوبة
+const studentsData = [
+  {
+    id: 1,
+    registrationNumber: "131686",
+    fullName: "آية جمعة عبدالسلام فرنانة",
+    status: "مستمر",
+    academicYear: "2024-2025",
+    stage: "السنة الثانية",
+    section: "الدراسات الإسلامية",
+    studySystem: "نظامي",
+    gender: "أنثى",
+    photo: null,
+    nationalId: "220080152695",
+    birthDate: "2008-10-23",
+    nationality: "ليبيا",
+    birthPlace: "طرابلس",
+    phone: "",
+    address: "الكريمية",
+    guardianName: "جمعة عبد السلام فرنانة",
+    guardianRelation: "اب",
+    guardianPhone: "913808566",
+    emergencyContact: "",
+    emergencyPhone: "",
+    emergencyAddress: "",
+    branch: "عثمان بن عفان",
+    registrationDate: "غير محدد",
+    registrationStatus: "مستجد",
+    previousLevel: "",
+    previousSchool: "",
+    healthStatus: "",
+    chronicDiseases: "",
+    allergies: "",
+    specialNeeds: "",
+    skills: "",
+  },
+  {
+    id: 2,
+    registrationNumber: "2024002",
+    fullName: "محمد عبدالله سالم حسن",
+    status: "منقول",
+    academicYear: "2024-2025",
+    stage: "الثانية",
+    section: "ب",
+    studySystem: "نظامي",
+    gender: "ذكر",
+    photo: "/placeholder.svg?height=40&width=40",
+    nationalId: "200012345678",
+    birthDate: "2000-03-20",
+    nationality: "ليبيا",
+    birthPlace: "بنغازي",
+    phone: "092-2345678",
+    address: "بنغازي - منطقة الصابري",
+    guardianName: "عبدالله سالم حسن",
+    guardianRelation: "الوالد",
+    guardianPhone: "091-8765432",
+    emergencyContact: "فاطمة سالم",
+    emergencyPhone: "094-1234567",
+    emergencyAddress: "بنغازي - الصابري",
+    branch: "الطب",
+    registrationDate: "2023-09-01",
+    registrationStatus: "مستمر",
+    previousLevel: "الثانوية العامة",
+    previousSchool: "ثانوية الصابري",
+    healthStatus: "جيد",
+    chronicDiseases: "لا يوجد",
+    allergies: "حساسية من البنسلين",
+    specialNeeds: "لا يوجد",
+    skills: "برمجة، رياضيات",
+  },
+  {
+    id: 3,
+    registrationNumber: "2024003",
+    fullName: "عائشة محمود إبراهيم أحمد",
+    status: "مستمر",
+    academicYear: "2024-2025",
+    stage: "الأولى",
+    section: "أ",
+    studySystem: "مسائي",
+    gender: "أنثى",
+    photo: "/placeholder.svg?height=40&width=40",
+    nationalId: "200123456789",
+    birthDate: "2001-07-10",
+    nationality: "ليبيا",
+    birthPlace: "مصراتة",
+    phone: "093-3456789",
+    address: "مصراتة - منطقة الزروق",
+    guardianName: "محمود إبراهيم أحمد",
+    guardianRelation: "الوالد",
+    guardianPhone: "094-9876543",
+    emergencyContact: "زينب محمود",
+    emergencyPhone: "095-2345678",
+    emergencyAddress: "مصراتة - الزروق",
+    branch: "الآداب",
+    registrationDate: "2024-09-01",
+    registrationStatus: "مستجد",
+    previousLevel: "الثانوية العامة",
+    previousSchool: "ثانوية الزروق",
+    healthStatus: "جيد",
+    chronicDiseases: "لا يوجد",
+    allergies: "لا يوجد",
+    specialNeeds: "لا يوجد",
+    skills: "كتابة، خطابة",
+  },
+  {
+    id: 4,
+    registrationNumber: "2024004",
+    fullName: "خالد سعد عمر محمد",
+    status: "منسحب",
+    academicYear: "2023-2024",
+    stage: "الرابعة",
+    section: "ج",
+    studySystem: "منتسب",
+    gender: "ذكر",
+    photo: null,
+    nationalId: "199812345678",
+    birthDate: "1998-12-05",
+    nationality: "ليبيا",
+    birthPlace: "سبها",
+    phone: "094-4567890",
+    address: "سبها - منطقة المنشية",
+    guardianName: "سعد عمر محمد",
+    guardianRelation: "الوالد",
+    guardianPhone: "095-0987654",
+    emergencyContact: "أمينة سعد",
+    emergencyPhone: "096-3456789",
+    emergencyAddress: "سبها - المنشية",
+    branch: "التجارة",
+    registrationDate: "2021-09-01",
+    registrationStatus: "منسحب",
+    previousLevel: "الثانوية العامة",
+    previousSchool: "ثانوية المنشية",
+    healthStatus: "جيد",
+    chronicDiseases: "السكري",
+    allergies: "لا يوجد",
+    specialNeeds: "لا يوجد",
+    skills: "محاسبة، إدارة",
+  },
+  {
+    id: 5,
+    registrationNumber: "2024005",
+    fullName: "مريم علي حسين عبدالله",
+    status: "متخرج",
+    academicYear: "2023-2024",
+    stage: "الرابعة",
+    section: "أ",
+    studySystem: "نظامي",
+    gender: "أنثى",
+    photo: "/placeholder.svg?height=40&width=40",
+    nationalId: "199712345678",
+    birthDate: "1997-09-15",
+    nationality: "ليبيا",
+    birthPlace: "الزاوية",
+    phone: "095-5678901",
+    address: "الزاوية - منطقة الحرية",
+    guardianName: "علي حسين عبدالله",
+    guardianRelation: "الوالد",
+    guardianPhone: "096-1098765",
+    emergencyContact: "خديجة علي",
+    emergencyPhone: "097-4567890",
+    emergencyAddress: "الزاوية - الحرية",
+    branch: "العلوم",
+    registrationDate: "2020-09-01",
+    registrationStatus: "متخرج",
+    previousLevel: "الثانوية العامة",
+    previousSchool: "ثانوية الحرية",
+    healthStatus: "جيد",
+    chronicDiseases: "لا يوجد",
+    allergies: "لا يوجد",
+    specialNeeds: "لا يوجد",
+    skills: "بحث علمي، تحليل",
+  },
+]
 
-// // مكون بطاقة الإحصائيات المحسن
-// function StatCard({
-//   title,
-//   value,
-//   icon: Icon,
-//   color,
-//   trend,
-//   description,
-// }: {
-//   title: string
-//   value: string | number
-//   icon: any
-//   color: string
-//   trend?: string
-//   description?: string
-// }) {
-//   return (
-//     <Card className="bg-gradient-to-br from-lamaPurpleLight to-white border-lamaSky/20 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
-//       <CardContent className="p-6">
-//         <div className="flex items-center justify-between mb-4">
-//           <div className="flex-1">
-//             <p className="text-sm font-medium text-lamaYellow/80 mb-1">{title}</p>
-//             <p className={`text-3xl font-bold ${color} mb-1`}>{value}</p>
-//             {trend && <p className="text-xs text-lamaSky">{trend}</p>}
-//           </div>
-//           <div
-//             className={`p-3 rounded-full bg-gradient-to-br from-lamaSkyLight to-lamaSky/20 group-hover:scale-110 transition-transform duration-300`}
-//           >
-//             <Icon className={`h-6 w-6 ${color}`} />
-//           </div>
-//         </div>
-//         {description && (
-//           <div className="pt-2 border-t border-lamaSky/10">
-//             <p className="text-xs text-lamaYellow/60">{description}</p>
-//           </div>
-//         )}
-//       </CardContent>
-//     </Card>
-//   )
-// }
+// تحديث ألوان الحالات لإزالة "نشط" و إضافة "مستمر"
+const statusColors = {
+  مستمر: "bg-green-100 text-green-800 border-green-200",
+  منقول: "bg-blue-100 text-blue-800 border-blue-200",
+  منسحب: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  مفصول: "bg-red-100 text-red-800 border-red-200",
+  متخرج: "bg-gray-100 text-gray-800 border-gray-200",
+  مستجد: "bg-purple-100 text-purple-800 border-purple-200",
+}
 
-// // مكون حالة الطلب المحسن
-// function StatusBadge({ status }: { status: string }) {
-//   const getStatusConfig = (status: string) => {
-//     switch (status) {
-//       case "جديد":
-//         return {
-//           color: "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue-200",
-//           icon: AlertCircle,
-//           pulse: true,
-//         }
-//       case "قيد المراجعة":
-//         return {
-//           color: "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-200",
-//           icon: Clock,
-//           pulse: true,
-//         }
-//       case "تم التعديل":
-//         return {
-//           color: "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-green-200",
-//           icon: CheckCircle,
-//           pulse: false,
-//         }
-//       case "تمت المراجعة - لا يوجد تعديل":
-//         return {
-//           color: "bg-gradient-to-r from-gray-500 to-gray-600 text-white shadow-gray-200",
-//           icon: CheckCircle,
-//           pulse: false,
-//         }
-//       case "معلق":
-//         return {
-//           color: "bg-gradient-to-r from-red-500 to-red-600 text-white shadow-red-200",
-//           icon: XCircle,
-//           pulse: true,
-//         }
-//       default:
-//         return {
-//           color: "bg-gray-500 text-white",
-//           icon: AlertCircle,
-//           pulse: false,
-//         }
-//     }
-//   }
+export default function StudentsDataPage() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const [academicYearFilter, setAcademicYearFilter] = useState("الكل")
+  const [stageFilter, setStageFilter] = useState("الكل")
+  const [genderFilter, setGenderFilter] = useState("الكل")
+  const [statusFilter, setStatusFilter] = useState("الكل")
+  const [selectedStudent, setSelectedStudent] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [sortColumn, setSortColumn] = useState("")
+  const [sortDirection, setSortDirection] = useState("asc")
+  const [students, setStudents] = useState(studentsData)
 
-//   const config = getStatusConfig(status)
-//   const Icon = config.icon
+  // إضافة state جديد لإدارة الأعمدة المرئية
+  const [visibleColumns, setVisibleColumns] = useState({
+    index: true,
+    registrationNumber: true,
+    fullName: true,
+    status: true,
+    academicYear: true,
+    stage: true,
+    section: true,
+    studySystem: true,
+    gender: true,
+    photo: true,
+    actions: true,
+  })
 
-//   return (
-//     <Badge
-//       className={`${config.color} text-xs px-3 py-1 shadow-lg ${config.pulse ? "animate-pulse" : ""} flex items-center gap-1`}
-//     >
-//       <Icon className="h-3 w-3" />
-//       {status}
-//     </Badge>
-//   )
-// }
+  // إضافة state جديد لإدارة الأخطاء والتحقق من صحة البيانات
+  const [editingStudent, setEditingStudent] = useState(null)
+  const [editFormData, setEditFormData] = useState({})
+  const [formErrors, setFormErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-// // مكون مؤشر التقدم للإحصائيات
-// function ProgressIndicator({
-//   label,
-//   value,
-//   total,
-//   color,
-// }: { label: string; value: number; total: number; color: string }) {
-//   const percentage = total > 0 ? (value / total) * 100 : 0
+  // إضافة وظيفة التحقق من صحة البيانات
+  const validateForm = () => {
+    const errors = {}
 
-//   return (
-//     <div className="space-y-2">
-//       <div className="flex justify-between text-sm">
-//         <span className="text-lamaYellow font-medium">{label}</span>
-//         <span className="text-lamaSky font-semibold">
-//           {value} ({percentage.toFixed(1)}%)
-//         </span>
-//       </div>
-//       <Progress value={percentage} className="h-2" />
-//     </div>
-//   )
-// }
+    // التحقق من الحقول المطلوبة
+    if (!editFormData.fullName?.trim()) {
+      errors.fullName = "الاسم الرباعي مطلوب"
+    } else if (editFormData.fullName.trim().length < 3) {
+      errors.fullName = "الاسم يجب أن يكون 3 أحرف على الأقل"
+    }
 
-// export default function ReviewManagementSystem() {
-//   const [data, setData] = useState<ReviewRequest[]>(mockData)
-//   const [filters, setFilters] = useState({
-//     searchName: "",
-//     searchId: "",
-//     academicYear: "الأولى",
-//     status: "جديد",
-//     section: "أ",
-//     subject: "الرياضيات",
-//     fromDate: "",
-//     toDate: "",
-//   })
-//   const [selectedRequest, setSelectedRequest] = useState<ReviewRequest | null>(null)
-//   const [editingGrade, setEditingGrade] = useState<{ id: string; grade: number } | null>(null)
-//   const [isLoading, setIsLoading] = useState(false)
-//   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
+    if (!editFormData.registrationNumber?.trim()) {
+      errors.registrationNumber = "رقم القيد مطلوب"
+    } else if (!/^\d+$/.test(editFormData.registrationNumber)) {
+      errors.registrationNumber = "رقم القيد يجب أن يحتوي على أرقام فقط"
+    } else {
+      // التحقق من عدم تكرار رقم القيد
+      const existingStudent = students.find(
+        (s) => s.registrationNumber === editFormData.registrationNumber && s.id !== editingStudent.id,
+      )
+      if (existingStudent) {
+        errors.registrationNumber = "رقم القيد موجود مسبقاً"
+      }
+    }
 
-//   // تصفية البيانات
-//   const filteredData = useMemo(() => {
-//     const filtered = data.filter((item) => {
-//       return (
-//         (!filters.searchName || item.studentName.includes(filters.searchName)) &&
-//         (!filters.searchId || item.nationalId.includes(filters.searchId)) &&
-//         (!filters.academicYear || item.academicYear === filters.academicYear) &&
-//         (!filters.status || item.status === filters.status) &&
-//         (!filters.section || item.section === filters.section) &&
-//         (!filters.subject || item.subject === filters.subject) &&
-//         (!filters.fromDate || item.submissionDate >= filters.fromDate) &&
-//         (!filters.toDate || item.submissionDate <= filters.toDate)
-//       )
-//     })
+    if (!editFormData.nationalId?.trim()) {
+      errors.nationalId = "الرقم الوطني مطلوب"
+    } else if (!/^\d{12}$/.test(editFormData.nationalId)) {
+      errors.nationalId = "الرقم الوطني يجب أن يكون 12 رقماً"
+    } else {
+      // التحقق من عدم تكرار الرقم الوطني
+      const existingStudent = students.find(
+        (s) => s.nationalId === editFormData.nationalId && s.id !== editingStudent.id,
+      )
+      if (existingStudent) {
+        errors.nationalId = "الرقم الوطني موجود مسبقاً"
+      }
+    }
 
-//     // ترتيب البيانات
-//     if (sortConfig) {
-//       filtered.sort((a, b) => {
-//         const aValue = a[sortConfig.key as keyof ReviewRequest]
-//         const bValue = b[sortConfig.key as keyof ReviewRequest]
+    if (!editFormData.gender) {
+      errors.gender = "الجنس مطلوب"
+    }
 
-//         if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1
-//         if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1
-//         return 0
-//       })
-//     }
+    if (!editFormData.branch?.trim()) {
+      errors.branch = "الفرع الأكاديمي مطلوب"
+    }
 
-//     return filtered
-//   }, [data, filters, sortConfig])
+    if (!editFormData.academicYear) {
+      errors.academicYear = "العام الدراسي مطلوب"
+    }
 
-//   // حساب الإحصائيات
-//   const stats = useMemo(() => {
-//     const totalStudents = new Set(data.map((item) => item.nationalId)).size
-//     const totalRequests = data.length
-//     const totalSubjects = new Set(data.map((item) => item.subject)).size
-//     const modifiedCount = data.filter((item) => item.status === "تم التعديل").length
-//     const modificationRate = totalRequests > 0 ? Math.round((modifiedCount / totalRequests) * 100) : 0
+    if (!editFormData.stage) {
+      errors.stage = "المرحلة الدراسية مطلوبة"
+    }
 
-//     return {
-//       totalStudents,
-//       totalRequests,
-//       totalSubjects,
-//       modificationRate,
-//     }
-//   }, [data])
+    if (!editFormData.status) {
+      errors.status = "حالة الطالب مطلوبة"
+    }
 
-//   // إحصائيات حسب السنة
-//   const yearStats = useMemo(() => {
-//     const years = ["الأولى", "الثانية", "الثالثة", "الرابعة"]
-//     return years.map((year) => {
-//       const yearData = data.filter((item) => item.academicYear === year)
-//       return {
-//         year,
-//         studentCount: new Set(yearData.map((item) => item.nationalId)).size,
-//         requestCount: yearData.length,
-//       }
-//     })
-//   }, [data])
+    if (!editFormData.studySystem) {
+      errors.studySystem = "نظام الدراسة مطلوب"
+    }
 
-//   // إحصائيات حسب الحالة
-//   const statusStats = useMemo(() => {
-//     const statuses = ["جديد", "قيد المراجعة", "تم التعديل", "تمت المراجعة - لا يوجد تعديل", "معلق"]
-//     const total = data.length
-//     return statuses.map((status) => {
-//       const count = data.filter((item) => item.status === status).length
-//       const percentage = total > 0 ? Math.round((count / total) * 100) : 0
-//       return { status, count, percentage }
-//     })
-//   }, [data])
+    if (!editFormData.guardianName?.trim()) {
+      errors.guardianName = "اسم ولي الأمر مطلوب"
+    }
 
-//   // حفظ الدرجة الجديدة
-//   const saveGrade = async (id: string, newGrade: number) => {
-//     setIsLoading(true)
-//     // محاكاة تأخير الشبكة
-//     await new Promise((resolve) => setTimeout(resolve, 1000))
+    if (!editFormData.guardianRelation) {
+      errors.guardianRelation = "صلة القرابة مطلوبة"
+    }
 
-//     setData((prev) =>
-//       prev.map((item) =>
-//         item.id === id
-//           ? { ...item, newGrade, status: "تم التعديل", lastUpdate: new Date().toISOString().split("T")[0] }
-//           : item,
-//       ),
-//     )
-//     setEditingGrade(null)
-//     setIsLoading(false)
-//   }
+    if (!editFormData.guardianPhone?.trim()) {
+      errors.guardianPhone = "رقم هاتف ولي الأمر مطلوب"
+    } else if (!/^[0-9\-+\s]+$/.test(editFormData.guardianPhone)) {
+      errors.guardianPhone = "رقم الهاتف غير صحيح"
+    }
 
-//   // تحديث حالة الطلب
-//   const updateStatus = async (id: string, newStatus: ReviewRequest["status"]) => {
-//     setIsLoading(true)
-//     await new Promise((resolve) => setTimeout(resolve, 500))
+    // التحقق من صحة البريد الإلكتروني إذا تم إدخاله
+    if (editFormData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editFormData.email)) {
+      errors.email = "البريد الإلكتروني غير صحيح"
+    }
 
-//     setData((prev) =>
-//       prev.map((item) =>
-//         item.id === id ? { ...item, status: newStatus, lastUpdate: new Date().toISOString().split("T")[0] } : item,
-//       ),
-//     )
-//     setIsLoading(false)
-//   }
+    // التحقق من صحة تاريخ الميلاد
+    if (editFormData.birthDate) {
+      const birthDate = new Date(editFormData.birthDate)
+      const today = new Date()
+      const age = today.getFullYear() - birthDate.getFullYear()
 
-//   // ترتيب الجدول
-//   const handleSort = (key: string) => {
-//     setSortConfig((current) => ({
-//       key,
-//       direction: current?.key === key && current.direction === "asc" ? "desc" : "asc",
-//     }))
-//   }
+      if (birthDate > today) {
+        errors.birthDate = "تاريخ الميلاد لا يمكن أن يكون في المستقبل"
+      } else if (age < 15 || age > 60) {
+        errors.birthDate = "العمر يجب أن يكون بين 15 و 60 سنة"
+      }
+    }
 
-//   // إعادة تعيين المرشحات
-//   const resetFilters = () => {
-//     setFilters({
-//       searchName: "",
-//       searchId: "",
-//       academicYear: "الأولى",
-//       status: "جديد",
-//       section: "أ",
-//       subject: "الرياضيات",
-//       fromDate: "",
-//       toDate: "",
-//     })
-//   }
+    // التحقق من تاريخ التسجيل
+    if (editFormData.registrationDate) {
+      const regDate = new Date(editFormData.registrationDate)
+      const today = new Date()
 
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-lamaPurple via-lamaPurpleLight to-white p-4 rtl" dir="rtl">
-//       <div className="max-w-7xl mx-auto space-y-8">
-//         {/* العنوان الرئيسي المحسن */}
-//         <div className="text-center mb-12 relative">
-//           <div className="absolute inset-0 bg-gradient-to-r from-lamaSky/10 via-transparent to-lamaYellow/10 rounded-3xl blur-3xl"></div>
-//           <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-lamaSky/20">
-//             <div className="flex items-center justify-center gap-3 mb-4">
-//               <GraduationCap className="h-10 w-10 text-lamaSky" />
-//               <h1 className="text-4xl font-bold bg-gradient-to-r from-lamaYellow to-lamaSky bg-clip-text text-transparent">
-//                 نظام إدارة طلبات مراجعة الدرجات
-//               </h1>
-//             </div>
-//             <p className="text-lg text-lamaSky/80 font-medium">قسم الدراسة والامتحانات - الفترة الثالثة</p>
-//             <div className="mt-4 flex items-center justify-center gap-6 text-sm text-lamaYellow/70">
-//               <div className="flex items-center gap-1">
-//                 <Calendar className="h-4 w-4" />
-//                 <span>العام الدراسي 2024-2025</span>
-//               </div>
-//               <div className="flex items-center gap-1">
-//                 <ClipboardList className="h-4 w-4" />
-//                 <span>{data.length} طلب مراجعة</span>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
+      if (regDate > today) {
+        errors.registrationDate = "تاريخ التسجيل لا يمكن أن يكون في المستقبل"
+      }
+    }
 
-//         {/* مرشحات البحث والتصفية المحسنة */}
-//         <Card className="bg-white/90 backdrop-blur-sm border-lamaSky/20 shadow-xl">
-//           <CardHeader className="bg-gradient-to-r from-lamaSkyLight/50 to-lamaYellowLight/50">
-//             <CardTitle className="text-lamaYellow flex items-center gap-3">
-//               <div className="p-2 bg-white/80 rounded-lg">
-//                 <Filter className="h-5 w-5" />
-//               </div>
-//               مرشحات البحث والتصفية
-//             </CardTitle>
-//           </CardHeader>
-//           <CardContent className="p-6 space-y-6">
-//             {/* الصف الأول - البحث */}
-//             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold flex items-center gap-2">
-//                   <Search className="h-4 w-4" />
-//                   البحث بالاسم
-//                 </Label>
-//                 <Input
-//                   placeholder="اسم الطالبة..."
-//                   value={filters.searchName}
-//                   onChange={(e) => setFilters((prev) => ({ ...prev, searchName: e.target.value }))}
-//                   className="bg-white border-lamaSky/30 focus:border-lamaSky focus:ring-lamaSky/20 transition-all duration-200"
-//                 />
-//               </div>
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold flex items-center gap-2">
-//                   <Search className="h-4 w-4" />
-//                   البحث بالرقم الوطني
-//                 </Label>
-//                 <Input
-//                   placeholder="الرقم الوطني..."
-//                   value={filters.searchId}
-//                   onChange={(e) => setFilters((prev) => ({ ...prev, searchId: e.target.value }))}
-//                   className="bg-white border-lamaSky/30 focus:border-lamaSky focus:ring-lamaSky/20 transition-all duration-200"
-//                 />
-//               </div>
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold">السنة الدراسية</Label>
-//                 <Select
-//                   value={filters.academicYear}
-//                   onValueChange={(value) => setFilters((prev) => ({ ...prev, academicYear: value }))}
-//                 >
-//                   <SelectTrigger className="bg-white border-lamaSky/30 focus:border-lamaSky">
-//                     <SelectValue placeholder="جميع السنوات" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="الأولى">الأولى</SelectItem>
-//                     <SelectItem value="الثانية">الثانية</SelectItem>
-//                     <SelectItem value="الثالثة">الثالثة</SelectItem>
-//                     <SelectItem value="الرابعة">الرابعة</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//             </div>
+    return errors
+  }
 
-//             <Separator className="bg-lamaSky/20" />
+  // تحديث وظيفة handleEdit
+  const handleEdit = (student) => {
+    setEditingStudent(student)
+    setEditFormData({ ...student })
+    setFormErrors({})
+  }
 
-//             {/* الصف الثاني - التصفية */}
-//             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold">حالة الطلب</Label>
-//                 <Select
-//                   value={filters.status}
-//                   onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}
-//                 >
-//                   <SelectTrigger className="bg-white border-lamaSky/30 focus:border-lamaSky">
-//                     <SelectValue placeholder="جميع الحالات" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="جديد">جديد</SelectItem>
-//                     <SelectItem value="قيد المراجعة">قيد المراجعة</SelectItem>
-//                     <SelectItem value="تم التعديل">تم التعديل</SelectItem>
-//                     <SelectItem value="تمت المراجعة - لا يوجد تعديل">تمت المراجعة - لا يوجد تعديل</SelectItem>
-//                     <SelectItem value="معلق">معلق</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold">الشعبة</Label>
-//                 <Select
-//                   value={filters.section}
-//                   onValueChange={(value) => setFilters((prev) => ({ ...prev, section: value }))}
-//                 >
-//                   <SelectTrigger className="bg-white border-lamaSky/30 focus:border-lamaSky">
-//                     <SelectValue placeholder="جميع الشعب" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="أ">أ</SelectItem>
-//                     <SelectItem value="ب">ب</SelectItem>
-//                     <SelectItem value="ج">ج</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold">المادة</Label>
-//                 <Select
-//                   value={filters.subject}
-//                   onValueChange={(value) => setFilters((prev) => ({ ...prev, subject: value }))}
-//                 >
-//                   <SelectTrigger className="bg-white border-lamaSky/30 focus:border-lamaSky">
-//                     <SelectValue placeholder="جميع المواد" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="الرياضيات">الرياضيات</SelectItem>
-//                     <SelectItem value="الفيزياء">الفيزياء</SelectItem>
-//                     <SelectItem value="الكيمياء">الكيمياء</SelectItem>
-//                     <SelectItem value="الأحياء">الأحياء</SelectItem>
-//                     <SelectItem value="التاريخ">التاريخ</SelectItem>
-//                     <SelectItem value="الجغرافيا">الجغرافيا</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//             </div>
+  // تحديث وظيفة handleSaveEdit
+  const handleSaveEdit = async () => {
+    setIsSubmitting(true)
 
-//             <Separator className="bg-lamaSky/20" />
+    const errors = validateForm()
+    setFormErrors(errors)
 
-//             {/* الصف الثالث - التاريخ والإجراءات */}
-//             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold">من تاريخ</Label>
-//                 <Input
-//                   type="date"
-//                   value={filters.fromDate}
-//                   onChange={(e) => setFilters((prev) => ({ ...prev, fromDate: e.target.value }))}
-//                   className="bg-white border-lamaSky/30 focus:border-lamaSky"
-//                 />
-//               </div>
-//               <div className="space-y-2">
-//                 <Label className="text-lamaYellow font-semibold">إلى تاريخ</Label>
-//                 <Input
-//                   type="date"
-//                   value={filters.toDate}
-//                   onChange={(e) => setFilters((prev) => ({ ...prev, toDate: e.target.value }))}
-//                   className="bg-white border-lamaSky/30 focus:border-lamaSky"
-//                 />
-//               </div>
-//               <div className="flex items-end">
-//                 <Button
-//                   onClick={resetFilters}
-//                   variant="outline"
-//                   className="w-full border-lamaSky/30 text-lamaYellow hover:bg-lamaSkyLight/20 transition-all duration-200 bg-transparent"
-//                 >
-//                   <RefreshCw className="ml-2 h-4 w-4" />
-//                   إعادة تعيين
-//                 </Button>
-//               </div>
-//               <div className="flex items-end">
-//                 <Button className="bg-gradient-to-r from-lamaSky to-lamaYellow hover:from-lamaYellow hover:to-lamaSky text-white w-full shadow-lg transition-all duration-200">
-//                   <Download className="ml-2 h-4 w-4" />
-//                   تصدير النتائج
-//                 </Button>
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
+    if (Object.keys(errors).length > 0) {
+      setIsSubmitting(false)
+      return
+    }
 
-//         {/* الإحصائيات السريعة المحسنة */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-//           <StatCard
-//             title="إجمالي الطالبات"
-//             value={stats.totalStudents.toLocaleString()}
-//             icon={Users}
-//             color="text-lamaSky"
-//             trend="↗ +12 هذا الأسبوع"
-//             description="العدد الإجمالي للطالبات المسجلات"
-//           />
-//           <StatCard
-//             title="إجمالي الطلبات"
-//             value={stats.totalRequests.toLocaleString()}
-//             icon={FileText}
-//             color="text-lamaYellow"
-//             trend="↗ +8 طلبات جديدة"
-//             description="مجموع طلبات المراجعة المقدمة"
-//           />
-//           <StatCard
-//             title="المقررات المراجعة"
-//             value={stats.totalSubjects}
-//             icon={BookOpen}
-//             color="text-lamaSky"
-//             description="عدد المواد الدراسية المختلفة"
-//           />
-//           <StatCard
-//             title="معدل التعديل"
-//             value={`${stats.modificationRate}%`}
-//             icon={TrendingUp}
-//             color="text-lamaYellow"
-//             trend={stats.modificationRate > 20 ? "↗ مرتفع" : "↘ منخفض"}
-//             description="نسبة الطلبات التي تم تعديل درجاتها"
-//           />
-//         </div>
+    try {
+      // محاكاة عملية الحفظ
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-//         {/* جدول الطلبات المستلمة المحسن */}
-//         <Card className="bg-white/90 backdrop-blur-sm border-lamaSky/20 shadow-xl">
-//           <CardHeader className="bg-gradient-to-r from-lamaSkyLight/50 to-lamaYellowLight/50">
-//             <div className="flex items-center justify-between">
-//               <CardTitle className="text-lamaYellow flex items-center gap-3">
-//                 <div className="p-2 bg-white/80 rounded-lg">
-//                   <ClipboardList className="h-5 w-5" />
-//                 </div>
-//                 الطلبات المستلمة ({filteredData.length})
-//               </CardTitle>
-//               <div className="flex items-center gap-2 text-sm text-lamaSky">
-//                 <BarChart3 className="h-4 w-4" />
-//                 <span>
-//                   عرض {filteredData.length} من {data.length}
-//                 </span>
-//               </div>
-//             </div>
-//           </CardHeader>
-//           <CardContent className="p-0">
-//             <div className="overflow-x-auto">
-//               <table className="w-full text-sm">
-//                 <thead className="bg-gradient-to-r from-lamaSkyLight/30 to-lamaYellowLight/30">
-//                   <tr className="border-b border-lamaSky/20">
-//                     {[
-//                       { key: "id", label: "رقم الطلب" },
-//                       { key: "studentName", label: "اسم الطالبة" },
-//                       { key: "nationalId", label: "الرقم الوطني" },
-//                       { key: "section", label: "الشعبة" },
-//                       { key: "academicYear", label: "السنة" },
-//                       { key: "subject", label: "المادة" },
-//                       { key: "currentGrade", label: "الدرجة الحالية" },
-//                       { key: "newGrade", label: "الدرجة الجديدة" },
-//                       { key: "submissionDate", label: "تاريخ التقديم" },
-//                       { key: "status", label: "الحالة" },
-//                       { key: "actions", label: "الإجراءات" },
-//                     ].map((column) => (
-//                       <th
-//                         key={column.key}
-//                         className="text-right p-4 text-lamaYellow font-semibold cursor-pointer hover:bg-lamaSkyLight/20 transition-colors duration-200"
-//                         onClick={() => column.key !== "actions" && handleSort(column.key)}
-//                       >
-//                         <div className="flex items-center gap-2">
-//                           {column.label}
-//                           {sortConfig?.key === column.key && (
-//                             <span className="text-xs">{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
-//                           )}
-//                         </div>
-//                       </th>
-//                     ))}
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {filteredData.length === 0 ? (
-//                     <tr>
-//                       <td colSpan={11} className="text-center py-12">
-//                         <div className="flex flex-col items-center gap-4 text-lamaSky/60">
-//                           <ClipboardList className="h-12 w-12" />
-//                           <p className="text-lg font-medium">لا توجد طلبات تطابق المرشحات المحددة</p>
-//                           <Button
-//                             onClick={resetFilters}
-//                             variant="outline"
-//                             className="border-lamaSky/30 text-lamaYellow bg-transparent"
-//                           >
-//                             إعادة تعيين المرشحات
-//                           </Button>
-//                         </div>
-//                       </td>
-//                     </tr>
-//                   ) : (
-//                     filteredData.map((request, index) => (
-//                       <tr
-//                         key={request.id}
-//                         className={`border-b border-lamaSky/10 hover:bg-gradient-to-r hover:from-lamaSkyLight/20 hover:to-transparent transition-all duration-200 ${
-//                           index % 2 === 0 ? "bg-white/50" : "bg-lamaPurpleLight/30"
-//                         }`}
-//                       >
-//                         <td className="p-4">
-//                           <div className="font-medium text-lamaSky bg-lamaSkyLight/30 px-2 py-1 rounded-md text-center">
-//                             {request.id}
-//                           </div>
-//                         </td>
-//                         <td className="p-4 font-medium">{request.studentName}</td>
-//                         <td className="p-4 font-mono text-sm bg-gray-50 rounded">{request.nationalId}</td>
-//                         <td className="p-4 text-center">
-//                           <Badge variant="outline" className="border-lamaSky/30 text-lamaYellow">
-//                             {request.section}
-//                           </Badge>
-//                         </td>
-//                         <td className="p-4">{request.academicYear}</td>
-//                         <td className="p-4">
-//                           <Badge variant="secondary" className="bg-lamaYellowLight/50 text-lamaYellow">
-//                             {request.subject}
-//                           </Badge>
-//                         </td>
-//                         <td className="p-4 text-center">
-//                           <div className="font-bold text-lg bg-lamaSkyLight/30 px-3 py-1 rounded-lg">
-//                             {request.currentGrade}
-//                           </div>
-//                         </td>
-//                         <td className="p-4 text-center">
-//                           {editingGrade?.id === request.id ? (
-//                             <div className="flex items-center gap-2">
-//                               <Input
-//                                 type="number"
-//                                 min="0"
-//                                 max="100"
-//                                 value={editingGrade.grade}
-//                                 onChange={(e) => setEditingGrade({ id: request.id, grade: Number(e.target.value) })}
-//                                 className="w-20 h-10 text-center font-bold border-2 border-statusModified focus:ring-statusModified"
-//                               />
-//                               <Button
-//                                 size="sm"
-//                                 onClick={() => saveGrade(request.id, editingGrade.grade)}
-//                                 disabled={isLoading}
-//                                 className="h-10 px-3 bg-statusModified hover:bg-statusModified/80 shadow-lg"
-//                               >
-//                                 {isLoading ? (
-//                                   <Loader2 className="h-4 w-4 animate-spin" />
-//                                 ) : (
-//                                   <Save className="h-4 w-4" />
-//                                 )}
-//                               </Button>
-//                             </div>
-//                           ) : (
-//                             <div className="flex items-center justify-center">
-//                               {request.newGrade !== null ? (
-//                                 <div className="font-bold text-lg text-statusModified bg-green-50 px-3 py-1 rounded-lg border border-green-200">
-//                                   {request.newGrade}
-//                                 </div>
-//                               ) : (
-//                                 <Button
-//                                   size="sm"
-//                                   variant="outline"
-//                                   onClick={() => setEditingGrade({ id: request.id, grade: request.currentGrade })}
-//                                   className="h-10 px-3 border-lamaSky/30 text-lamaYellow hover:bg-lamaSkyLight/20 transition-all duration-200"
-//                                 >
-//                                   <Edit className="h-4 w-4 ml-1" />
-//                                   تعديل
-//                                 </Button>
-//                               )}
-//                             </div>
-//                           )}
-//                         </td>
-//                         <td className="p-4 text-center">{request.submissionDate}</td>
-//                         <td className="p-4">
-//                           <Select
-//                             value={request.status}
-//                             onValueChange={(value) => updateStatus(request.id, value as ReviewRequest["status"])}
-//                             disabled={isLoading}
-//                           >
-//                             <SelectTrigger className="w-full h-10 border-0 bg-transparent">
-//                               <StatusBadge status={request.status} />
-//                             </SelectTrigger>
-//                             <SelectContent>
-//                               <SelectItem value="جديد">جديد</SelectItem>
-//                               <SelectItem value="قيد المراجعة">قيد المراجعة</SelectItem>
-//                               <SelectItem value="تم التعديل">تم التعديل</SelectItem>
-//                               <SelectItem value="تمت المراجعة - لا يوجد تعديل">تمت المراجعة - لا يوجد تعديل</SelectItem>
-//                               <SelectItem value="معلق">معلق</SelectItem>
-//                             </SelectContent>
-//                           </Select>
-//                         </td>
-//                         <td className="p-4">
-//                           <Dialog>
-//                             <DialogTrigger asChild>
-//                               <Button
-//                                 size="sm"
-//                                 variant="outline"
-//                                 onClick={() => setSelectedRequest(request)}
-//                                 className="h-10 px-3 border-lamaSky/30 text-lamaYellow hover:bg-lamaSkyLight/20 hover:scale-105 transition-all duration-200 shadow-md"
-//                               >
-//                                 <Eye className="h-4 w-4 ml-1" />
-//                                 عرض
-//                               </Button>
-//                             </DialogTrigger>
-//                             <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" dir="rtl">
-//                               <DialogHeader className="bg-gradient-to-r from-lamaSkyLight/50 to-lamaYellowLight/50 -m-6 p-6 mb-6">
-//                                 <DialogTitle className="text-lamaYellow text-xl flex items-center gap-3">
-//                                   <div className="p-2 bg-white/80 rounded-lg">
-//                                     <Eye className="h-5 w-5" />
-//                                   </div>
-//                                   تفاصيل الطلب
-//                                 </DialogTitle>
-//                               </DialogHeader>
-//                               {selectedRequest && (
-//                                 <div className="space-y-6">
-//                                   <div className="grid grid-cols-2 gap-6">
-//                                     <div className="space-y-4">
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">رقم الطلب:</Label>
-//                                         <p className="font-bold text-lg text-lamaSky mt-1">{selectedRequest.id}</p>
-//                                       </div>
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">اسم الطالبة:</Label>
-//                                         <p className="font-bold text-lg mt-1">{selectedRequest.studentName}</p>
-//                                       </div>
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">الرقم الوطني:</Label>
-//                                         <p className="font-mono text-lg mt-1">{selectedRequest.nationalId}</p>
-//                                       </div>
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">الشعبة:</Label>
-//                                         <p className="text-lg mt-1">{selectedRequest.section}</p>
-//                                       </div>
-//                                     </div>
-//                                     <div className="space-y-4">
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">السنة الدراسية:</Label>
-//                                         <p className="text-lg mt-1">{selectedRequest.academicYear}</p>
-//                                       </div>
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">المادة:</Label>
-//                                         <p className="text-lg mt-1">{selectedRequest.subject}</p>
-//                                       </div>
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">الدرجة الحالية:</Label>
-//                                         <p className="font-bold text-2xl text-lamaSky mt-1">
-//                                           {selectedRequest.currentGrade}
-//                                         </p>
-//                                       </div>
-//                                       <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                         <Label className="text-lamaYellow font-semibold text-sm">الدرجة الجديدة:</Label>
-//                                         <p className="font-bold text-2xl text-statusModified mt-1">
-//                                           {selectedRequest.newGrade || "لم يتم التعديل"}
-//                                         </p>
-//                                       </div>
-//                                     </div>
-//                                   </div>
+      setStudents((prevStudents) =>
+        prevStudents.map((student) => (student.id === editingStudent.id ? { ...editFormData } : student)),
+      )
 
-//                                   <Separator className="bg-lamaSky/20" />
+      setEditingStudent(null)
+      setEditFormData({})
+      setFormErrors({})
 
-//                                   <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                     <Label className="text-lamaYellow font-semibold text-sm">الحالة:</Label>
-//                                     <div className="mt-2">
-//                                       <StatusBadge status={selectedRequest.status} />
-//                                     </div>
-//                                   </div>
+      // إظهار رسالة نجاح
+      alert("تم حفظ التغييرات بنجاح!")
+    } catch (error) {
+      alert("حدث خطأ أثناء حفظ البيانات")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
-//                                   <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                     <Label className="text-lamaYellow font-semibold text-sm">ملاحظات المراجع:</Label>
-//                                     <Textarea
-//                                       value={selectedRequest.reviewerNotes}
-//                                       onChange={(e) => {
-//                                         setSelectedRequest({ ...selectedRequest, reviewerNotes: e.target.value })
-//                                         setData((prev) =>
-//                                           prev.map((item) =>
-//                                             item.id === selectedRequest.id
-//                                               ? { ...item, reviewerNotes: e.target.value }
-//                                               : item,
-//                                           ),
-//                                         )
-//                                       }}
-//                                       placeholder="أضف ملاحظاتك هنا..."
-//                                       className="mt-2 bg-white border-lamaSky/30 focus:border-lamaSky min-h-[100px]"
-//                                       rows={4}
-//                                     />
-//                                   </div>
+  // تحديث وظيفة handleInputChange لتشمل التحقق الفوري
+  const handleInputChange = (field, value) => {
+    setEditFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
 
-//                                   <div className="grid grid-cols-2 gap-4">
-//                                     <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                       <Label className="text-lamaYellow font-semibold text-sm">المراجع:</Label>
-//                                       <p className="text-lg mt-1">{selectedRequest.reviewer || "لم يتم التحديد"}</p>
-//                                     </div>
-//                                     <div className="bg-lamaPurpleLight/50 p-4 rounded-lg">
-//                                       <Label className="text-lamaYellow font-semibold text-sm">آخر تحديث:</Label>
-//                                       <p className="text-lg mt-1">{selectedRequest.lastUpdate}</p>
-//                                     </div>
-//                                   </div>
-//                                 </div>
-//                               )}
-//                             </DialogContent>
-//                           </Dialog>
-//                         </td>
-//                       </tr>
-//                     ))
-//                   )}
-//                 </tbody>
-//               </table>
-//             </div>
-//           </CardContent>
-//         </Card>
+    // إزالة الخطأ عند بدء الكتابة
+    if (formErrors[field]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [field]: null,
+      }))
+    }
 
-//         {/* قسم التحليلات المحسن */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-//           {/* الطالبات حسب السنة */}
-//           <Card className="bg-white/90 backdrop-blur-sm border-lamaSky/20 shadow-xl">
-//             <CardHeader className="bg-gradient-to-r from-lamaSkyLight/50 to-lamaYellowLight/50">
-//               <CardTitle className="text-lamaYellow flex items-center gap-3">
-//                 <div className="p-2 bg-white/80 rounded-lg">
-//                   <BarChart3 className="h-5 w-5" />
-//                 </div>
-//                 الطالبات حسب السنة الدراسية
-//               </CardTitle>
-//             </CardHeader>
-//             <CardContent className="p-6">
-//               <div className="space-y-6">
-//                 <div className="grid grid-cols-3 gap-4 text-sm font-semibold text-lamaYellow border-b border-lamaSky/20 pb-3">
-//                   <div>السنة الدراسية</div>
-//                   <div className="text-center">عدد الطالبات</div>
-//                   <div className="text-center">عدد الطلبات</div>
-//                 </div>
-//                 {yearStats.map((stat, index) => (
-//                   <div key={stat.year} className="space-y-3">
-//                     <div className="grid grid-cols-3 gap-4 text-sm py-3 hover:bg-lamaSkyLight/20 rounded-lg px-2 transition-colors duration-200">
-//                       <div className="font-semibold flex items-center gap-2">
-//                         <div
-//                           className={`w-3 h-3 rounded-full bg-gradient-to-r ${
-//                             index === 0
-//                               ? "from-blue-400 to-blue-600"
-//                               : index === 1
-//                                 ? "from-green-400 to-green-600"
-//                                 : index === 2
-//                                   ? "from-yellow-400 to-yellow-600"
-//                                   : "from-purple-400 to-purple-600"
-//                           }`}
-//                         ></div>
-//                         {stat.year}
-//                       </div>
-//                       <div className="text-center font-bold text-lamaSky text-lg">{stat.studentCount}</div>
-//                       <div className="text-center font-bold text-lamaYellow text-lg">{stat.requestCount}</div>
-//                     </div>
-//                     <ProgressIndicator
-//                       label={`تقدم ${stat.year}`}
-//                       value={stat.requestCount}
-//                       total={Math.max(...yearStats.map((s) => s.requestCount))}
-//                       color="lamaSky"
-//                     />
-//                   </div>
-//                 ))}
-//               </div>
-//             </CardContent>
-//           </Card>
+    // التحقق الفوري لبعض الحقول
+    if (field === "registrationNumber" && value) {
+      if (!/^\d+$/.test(value)) {
+        setFormErrors((prev) => ({
+          ...prev,
+          [field]: "رقم القيد يجب أن يحتوي على أرقام فقط",
+        }))
+      } else {
+        const existingStudent = students.find((s) => s.registrationNumber === value && s.id !== editingStudent.id)
+        if (existingStudent) {
+          setFormErrors((prev) => ({
+            ...prev,
+            [field]: "رقم القيد موجود مسبقاً",
+          }))
+        }
+      }
+    }
 
-//           {/* المقررات حسب الحالة */}
-//           <Card className="bg-white/90 backdrop-blur-sm border-lamaSky/20 shadow-xl">
-//             <CardHeader className="bg-gradient-to-r from-lamaSkyLight/50 to-lamaYellowLight/50">
-//               <CardTitle className="text-lamaYellow flex items-center gap-3">
-//                 <div className="p-2 bg-white/80 rounded-lg">
-//                   <ClipboardList className="h-5 w-5" />
-//                 </div>
-//                 الطلبات حسب الحالة
-//               </CardTitle>
-//             </CardHeader>
-//             <CardContent className="p-6">
-//               <div className="space-y-6">
-//                 <div className="grid grid-cols-3 gap-4 text-sm font-semibold text-lamaYellow border-b border-lamaSky/20 pb-3">
-//                   <div>الحالة</div>
-//                   <div className="text-center">العدد</div>
-//                   <div className="text-center">النسبة</div>
-//                 </div>
-//                 {statusStats.map((stat) => (
-//                   <div key={stat.status} className="space-y-3">
-//                     <div className="grid grid-cols-3 gap-4 text-sm py-3 hover:bg-lamaSkyLight/20 rounded-lg px-2 transition-colors duration-200">
-//                       <div className="flex items-center gap-3">
-//                         <StatusBadge status={stat.status} />
-//                       </div>
-//                       <div className="text-center font-bold text-lamaSky text-lg">{stat.count}</div>
-//                       <div className="text-center font-bold text-lamaYellow text-lg">{stat.percentage}%</div>
-//                     </div>
-//                     <ProgressIndicator label={stat.status} value={stat.count} total={data.length} color="lamaYellow" />
-//                   </div>
-//                 ))}
-//               </div>
-//             </CardContent>
-//           </Card>
-//         </div>
+    if (field === "nationalId" && value) {
+      if (!/^\d{12}$/.test(value)) {
+        setFormErrors((prev) => ({
+          ...prev,
+          [field]: "الرقم الوطني يجب أن يكون 12 رقماً",
+        }))
+      } else {
+        const existingStudent = students.find((s) => s.nationalId === value && s.id !== editingStudent.id)
+        if (existingStudent) {
+          setFormErrors((prev) => ({
+            ...prev,
+            [field]: "الرقم الوطني موجود مسبقاً",
+          }))
+        }
+      }
+    }
 
-//         {/* زر طباعة التقرير المحسن */}
-//         <div className="text-center">
-//           <div className="bg-gradient-to-r from-lamaSky/10 via-transparent to-lamaYellow/10 rounded-3xl p-8">
-//             <Button className="bg-gradient-to-r from-lamaSky to-lamaYellow hover:from-lamaYellow hover:to-lamaSky text-white px-12 py-4 text-lg font-semibold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
-//               <FileText className="ml-3 h-6 w-6" />
-//               طباعة التقرير الشامل
-//             </Button>
-//             <p className="text-sm text-lamaSky/70 mt-4">
-//               سيتم إنشاء تقرير PDF شامل يحتوي على جميع البيانات والإحصائيات
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
+    if (field === "guardianPhone" && value) {
+      if (!/^[0-9\-+\s]+$/.test(value)) {
+        setFormErrors((prev) => ({
+          ...prev,
+          [field]: "رقم الهاتف غير صحيح",
+        }))
+      }
+    }
+  }
+
+  // إضافة مكون لعرض رسائل الخطأ
+  const ErrorMessage = ({ error }) => {
+    if (!error) return null
+    return (
+      <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fillRule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+            clipRule="evenodd"
+          />
+        </svg>
+        {error}
+      </div>
+    )
+  }
+
+  const exportToCSV = () => {
+    const headers = [
+      "رقم القيد",
+      "الاسم الرباعي",
+      "حالة الطالب",
+      "العام الدراسي",
+      "المرحلة الدراسية",
+      "الشعبة",
+      "نظام الدراسة",
+      "الجنس",
+    ]
+    const csvContent = [
+      headers.join(","),
+      ...students.map((student) =>
+        [
+          student.registrationNumber,
+          student.fullName,
+          student.status,
+          student.academicYear,
+          student.stage,
+          student.section,
+          student.studySystem,
+          student.gender,
+        ].join(","),
+      ),
+    ].join("\n")
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    link.href = URL.createObjectURL(blob)
+    link.download = "بيانات_الطلاب.csv"
+    link.click()
+  }
+
+  // إضافة وظيفة طباعة الجدول
+  const printTable = () => {
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) {
+      alert("يرجى السماح للنوافذ المنبثقة لتتمكن من الطباعة")
+      return
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html dir="rtl" lang="ar">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>قائمة الطلاب</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            margin: 20px;
+            color: #333;
+            line-height: 1.4;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 3px solid #B8956A;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+          }
+          .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #B8956A;
+            margin-bottom: 10px;
+          }
+          .date {
+            font-size: 14px;
+            color: #666;
+          }
+          .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+          }
+          .table th,
+          .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+            font-size: 12px;
+          }
+          .table th {
+            background-color: #F0E6D6;
+            font-weight: bold;
+            color: #B8956A;
+          }
+          .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+          .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+          }
+          .status-مستمر { background-color: #dcfce7; color: #166534; }
+          .status-منقول { background-color: #dbeafe; color: #1e40af; }
+          .status-منسحب { background-color: #fef3c7; color: #92400e; }
+          .status-متخرج { background-color: #f3f4f6; color: #374151; }
+          .status-مستجد { background-color: #f3e8ff; color: #7c3aed; }
+          @media print {
+            body { 
+              margin: 0; 
+              font-size: 11px;
+            }
+            .table {
+              font-size: 10px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="title">قائمة الطلاب</div>
+          <div class="date">تاريخ الطباعة: ${new Date().toLocaleDateString("ar-SA")}</div>
+          <div class="date">إجمالي الطلاب: ${students.length}</div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              ${visibleColumns.index ? "<th>#</th>" : ""}
+              ${visibleColumns.registrationNumber ? "<th>رقم القيد</th>" : ""}
+              ${visibleColumns.fullName ? "<th>الاسم الرباعي</th>" : ""}
+              ${visibleColumns.status ? "<th>حالة الطالب</th>" : ""}
+              ${visibleColumns.academicYear ? "<th>العام الدراسي</th>" : ""}
+              ${visibleColumns.stage ? "<th>المرحلة الدراسية</th>" : ""}
+              ${visibleColumns.section ? "<th>الشعبة</th>" : ""}
+              ${visibleColumns.studySystem ? "<th>نظام الدراسة</th>" : ""}
+              ${visibleColumns.gender ? "<th>الجنس</th>" : ""}
+            </tr>
+          </thead>
+          <tbody>
+            ${students
+              .map(
+                (student, index) => `
+              <tr>
+                ${visibleColumns.index ? `<td>${index + 1}</td>` : ""}
+                ${visibleColumns.registrationNumber ? `<td>${student.registrationNumber}</td>` : ""}
+                ${visibleColumns.fullName ? `<td>${student.fullName}</td>` : ""}
+                ${visibleColumns.status ? `<td><span class="status-badge status-${student.status}">${student.status}</span></td>` : ""}
+                ${visibleColumns.academicYear ? `<td>${student.academicYear}</td>` : ""}
+                ${visibleColumns.stage ? `<td>${student.stage}</td>` : ""}
+                ${visibleColumns.section ? `<td>${student.section}</td>` : ""}
+                ${visibleColumns.studySystem ? `<td>${student.studySystem}</td>` : ""}
+                ${visibleColumns.gender ? `<td>${student.gender}</td>` : ""}
+              </tr>
+            `,
+              )
+              .join("")}
+          </tbody>
+        </table>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 500);
+          }
+          
+          window.onafterprint = function() {
+            window.close();
+          }
+        </script>
+      </body>
+      </html>
+    `
+
+    printWindow.document.write(printContent)
+    printWindow.document.close()
+  }
+
+  // إضافة وظيفة الطباعة
+  const printStudentDetails = (student) => {
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) {
+      alert("يرجى السماح للنوافذ المنبثقة لتتمكن من الطباعة")
+      return
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html dir="rtl" lang="ar">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ملف الطالب - ${student.fullName}</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            margin: 20px;
+            color: #333;
+            line-height: 1.6;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 3px solid #B8956A;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+          }
+          .student-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 4px solid #D2B48C;
+            background-color: #B8956A;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+          }
+          .student-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #B8956A;
+            margin-bottom: 5px;
+          }
+          .student-id {
+            font-size: 16px;
+            color: #666;
+          }
+          .section {
+            margin-bottom: 25px;
+            border: 1px solid #E2D5C7;
+            border-radius: 8px;
+            overflow: hidden;
+            page-break-inside: avoid;
+          }
+          .section-header {
+            background-color: #F0E6D6;
+            padding: 12px 20px;
+            font-weight: bold;
+            color: #B8956A;
+            border-bottom: 1px solid #E2D5C7;
+          }
+          .section-content {
+            padding: 20px;
+          }
+          .field-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+          }
+          .field-label {
+            font-weight: bold;
+            color: #B8956A;
+            width: 150px;
+            flex-shrink: 0;
+          }
+          .field-value {
+            flex: 1;
+            padding: 8px 12px;
+            background-color: #FCFAF8;
+            border: 1px solid #E2D5C7;
+            border-radius: 4px;
+          }
+          .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+          }
+          .status-مستمر { background-color: #dcfce7; color: #166534; }
+          .status-منقول { background-color: #dbeafe; color: #1e40af; }
+          .status-منسحب { background-color: #fef3c7; color: #92400e; }
+          .status-متخرج { background-color: #f3f4f6; color: #374151; }
+          .status-مستجد { background-color: #f3e8ff; color: #7c3aed; }
+          @media print {
+            body { 
+              margin: 0; 
+              font-size: 12px;
+            }
+            .no-print { 
+              display: none !important; 
+            }
+            .section {
+              page-break-inside: avoid;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="student-photo">
+            ${student.fullName.split(" ")[0][0]}
+          </div>
+          <div class="student-name">${student.fullName}</div>
+          <div class="student-id">رقم القيد: ${student.registrationNumber}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">البيانات الشخصية</div>
+          <div class="section-content">
+            <div class="field-row">
+              <div class="field-label">الاسم الرباعي:</div>
+              <div class="field-value">${student.fullName}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">رقم القيد:</div>
+              <div class="field-value">${student.registrationNumber}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">الرقم الوطني:</div>
+              <div class="field-value">${student.nationalId}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">الجنس:</div>
+              <div class="field-value">${student.gender}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">الجنسية:</div>
+              <div class="field-value">${student.nationality}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">تاريخ الميلاد:</div>
+              <div class="field-value">${student.birthDate}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">مكان الميلاد:</div>
+              <div class="field-value">${student.birthPlace}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">رقم الهاتف:</div>
+              <div class="field-value">${student.phone || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">العنوان:</div>
+              <div class="field-value">${student.address}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">بيانات ولي الأمر والطوارئ</div>
+          <div class="section-content">
+            <div class="field-row">
+              <div class="field-label">اسم ولي الأمر:</div>
+              <div class="field-value">${student.guardianName}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">صلة القرابة:</div>
+              <div class="field-value">${student.guardianRelation}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">رقم هاتف ولي الأمر:</div>
+              <div class="field-value">${student.guardianPhone}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">جهة الاتصال للطوارئ:</div>
+              <div class="field-value">${student.emergencyContact || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">هاتف الطوارئ:</div>
+              <div class="field-value">${student.emergencyPhone || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">عنوان الطوارئ:</div>
+              <div class="field-value">${student.emergencyAddress || "غير محدد"}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">البيانات الأكاديمية</div>
+          <div class="section-content">
+            <div class="field-row">
+              <div class="field-label">الفرع:</div>
+              <div class="field-value">${student.branch}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">العام الدراسي:</div>
+              <div class="field-value">${student.academicYear}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">المرحلة الدراسية:</div>
+              <div class="field-value">${student.stage}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">الشعبة:</div>
+              <div class="field-value">${student.section}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">نظام الدراسة:</div>
+              <div class="field-value">${student.studySystem}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">صفة القيد:</div>
+              <div class="field-value"><span class="status-badge status-${student.registrationStatus}">${student.registrationStatus}</span></div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">حالة الطالب:</div>
+              <div class="field-value"><span class="status-badge status-${student.status}">${student.status}</span></div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">تاريخ التسجيل:</div>
+              <div class="field-value">${student.registrationDate}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">المدرسة السابقة:</div>
+              <div class="field-value">${student.previousSchool || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">المستوى الأكاديمي السابق:</div>
+              <div class="field-value">${student.previousLevel || "غير محدد"}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">البيانات الصحية</div>
+          <div class="section-content">
+            <div class="field-row">
+              <div class="field-label">الحالة الصحية:</div>
+              <div class="field-value">${student.healthStatus || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">أمراض مزمنة:</div>
+              <div class="field-value">${student.chronicDiseases || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">الحساسيات:</div>
+              <div class="field-value">${student.allergies || "غير محدد"}</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">احتياجات خاصة:</div>
+              <div class="field-value">${student.specialNeeds || "غير محدد"}</div>
+            </div>
+          </div>
+        </div>
+
+        ${
+          student.skills
+            ? `
+        <div class="section">
+          <div class="section-header">ملاحظات (مهارات)</div>
+          <div class="section-content">
+            <div class="field-row">
+              <div class="field-value" style="width: 100%;">${student.skills}</div>
+            </div>
+          </div>
+        </div>
+        `
+            : ""
+        }
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 500);
+          }
+          
+          window.onafterprint = function() {
+            window.close();
+          }
+        </script>
+      </body>
+      </html>
+    `
+
+    printWindow.document.write(printContent)
+    printWindow.document.close()
+  }
+
+  const filteredStudents = useMemo(() => {
+    return students.filter((student) => {
+      const searchTermLower = searchTerm.toLowerCase()
+      const fullNameLower = student.fullName.toLowerCase()
+      const registrationNumber = student.registrationNumber.toLowerCase()
+
+      const academicYearMatch = academicYearFilter === "الكل" || student.academicYear === academicYearFilter
+      const stageMatch = stageFilter === "الكل" || student.stage === stageFilter
+      const genderMatch = genderFilter === "الكل" || student.gender === genderFilter
+      const statusMatch = statusFilter === "الكل" || student.status === statusFilter
+      const searchMatch =
+        searchTerm === "" ||
+        fullNameLower.includes(searchTermLower) ||
+        registrationNumber.includes(searchTermLower) ||
+        student.nationalId.includes(searchTermLower) ||
+        student.branch.toLowerCase().includes(searchTermLower)
+
+      return academicYearMatch && stageMatch && genderMatch && statusMatch && searchMatch
+    })
+  }, [students, searchTerm, academicYearFilter, stageFilter, genderFilter, statusFilter])
+
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+    } else {
+      setSortColumn(column)
+      setSortDirection("asc")
+    }
+  }
+
+  const sortedStudents = useMemo(() => {
+    if (!sortColumn) return filteredStudents
+
+    return [...filteredStudents].sort((a, b) => {
+      const valueA = a[sortColumn]
+      const valueB = b[sortColumn]
+
+      if (valueA < valueB) {
+        return sortDirection === "asc" ? -1 : 1
+      }
+      if (valueA > valueB) {
+        return sortDirection === "asc" ? 1 : -1
+      }
+      return 0
+    })
+  }, [filteredStudents, sortColumn, sortDirection])
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentStudents = useMemo(() => {
+    return sortedStudents.slice(startIndex, endIndex)
+  }, [sortedStudents, startIndex, endIndex])
+
+  const totalPages = Math.ceil(students.length / itemsPerPage)
+
+  const handleDelete = (id) => {
+    setStudents((prevStudents) => prevStudents.filter((student) => student.id !== id))
+  }
+}

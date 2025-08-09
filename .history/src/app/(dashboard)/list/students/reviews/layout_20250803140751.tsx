@@ -7,9 +7,9 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'المعهد المتوسط للداراسات الاسلامية ',
+  description: 'تطبيق لإدارة المعهد المتوسط للدراسات الإسلامية',
+  generator: 'Next.js',
 }
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+    <html lang="ar" className={`${inter.variable} ${mono.variable}`}>
       <body className="font-sans">{children}</body>
     </html>
   )

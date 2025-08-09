@@ -1,6 +1,5 @@
 "use client"
 
-
 import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -1414,7 +1413,7 @@ export default function StudentsDataPage() {
                                           </div>
                                         </div>
                                       </CardContent>
-                                    </Card>
+                                    </Card>n
 
                                     {/* بيانات ولي الأمر */}
                                     <Card className="bg-white border-lamaSky/20">
